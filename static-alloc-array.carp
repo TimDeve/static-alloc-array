@@ -1,0 +1,8 @@
+(defmacro static-alloc-array [name t len]
+  (let-do [arr-template (gensym-with name)]
+    (eval (list 'deftemplate arr-template
+                             (list 'StaticArray 'p)
+                             (String.concat ["static $p $NAME_data[" (str len) "] = { 0 }; "
+                                             "Array $NAME = { .len = " (str len) ", .data = $NAME_data }"])
+                             ""))
+    (eval (list 'def name (list 'the (list 'Ref (list 'StaticArray t)) (list 'ref arr-template))))))
